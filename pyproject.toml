@@ -35,3 +35,8 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
+
+[project.urls]
+Homepage = "https://github.com/Motor-Learning-Lab/albert-em-port"
+Repository = "https://github.com/Motor-Learning-Lab/albert-em-port"
+Issues = "https://github.com/Motor-Learning-Lab/albert-em-port/issues"

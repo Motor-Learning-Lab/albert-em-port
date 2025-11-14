@@ -28,7 +28,7 @@ This package provides a complete, high-performance Python implementation of the 
 
 ## Installation
 
-### Using pixi (Recommended)
+### Using pixi (recommended)
 
 ```bash
 # Clone the repository
@@ -45,14 +45,37 @@ pixi run example
 pixi run test
 ```
 
-### Using pip
+### Using pip (from GitHub)
+
+Install directly from the GitHub repository using a PEP 508 URL. The import name is `albert_em`.
+
+```bash
+pip install "albert-em @ git+https://github.com/Motor-Learning-Lab/albert-em-port@main"
+```
+
+Then in Python:
+
+```python
+import albert_em
+```
+
+You can also add this project as a dependency in your own `pyproject.toml`:
+
+```toml
+[project]
+dependencies = [
+    "albert-em @ git+https://github.com/Motor-Learning-Lab/albert-em-port@main",
+]
+```
+
+### Using pip (editable clone)
 
 ```bash
 # Clone the repository
 git clone https://github.com/Motor-Learning-Lab/albert-em-port.git
 cd albert-em-port
 
-# Install the package
+# Install the package (editable)
 pip install -e .
 
 # Or with visualization support
@@ -160,7 +183,7 @@ The EM algorithm iteratively:
 1. **E-step**: Estimates hidden states using Kalman smoothing
 2. **M-step**: Updates model parameters via constrained optimization (SLSQP)
 
-## Example: Notebook
+## Example: notebook
 
 Open the tutorial notebook for a complete, reproducible workflow:
 
