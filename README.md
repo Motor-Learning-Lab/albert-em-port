@@ -10,6 +10,7 @@ Python package for fitting two-state models of sensorimotor adaptation using the
 This package provides a complete, high-performance Python implementation of the Expectation-Maximization algorithm for fitting two-state models of motor learning. The implementation uses **Numba JIT compilation** to achieve C-like performance without requiring manual compilation of C++/MEX code.
 
 **Original Work:**
+
 - Author: Scott Albert
 - Institution: Johns Hopkins University
 - Lab: Laboratory for Computational Motor Control
@@ -96,23 +97,23 @@ parameters, likelihoods = generalized_expectation_maximization(
 
 ## Repository Structure
 
-```
+```text
 albert-em-port/
 ├── src/albert_em/              # Main package
 │   ├── __init__.py
 │   ├── em.py                   # Main EM coordinator
 │   ├── kalman_smoother.py      # E-step
 │   ├── m_step.py               # M-step
-│   ├── expected_complete_log_likelihood.py  # Numba-optimized
+│   ├── expected_complete_log_likelihood.py  # Numba-optimized with fallback
 │   ├── incomplete_log_likelihood.py
 │   └── simulation.py
-├── examples/
-│   └── tutorial.py             # Complete demonstration
+├── ipynb/
+│   └── tutorial.ipynb          # End-to-end demo (keep this)
 ├── tests/
-│   └── test_benchmark.py       # Performance benchmarks
+│   └── test_smoke.py           # Fast, clear smoke test
 ├── Matlab/                     # Original MATLAB code
-├── pixi.toml                   # Pixi configuration
-├── pyproject.toml              # Python package configuration
+├── pixi.toml                   # Pixi environment (dev + notebook)
+├── pyproject.toml              # Python package metadata
 └── README.md
 ```
 
@@ -155,21 +156,16 @@ The two-state model assumes motor adaptation is governed by two hidden states:
 - **Fast state**: Low retention (aF ≈ 0.6), high learning rate (bF ≈ 0.3)
 
 The EM algorithm iteratively:
+
 1. **E-step**: Estimates hidden states using Kalman smoothing
 2. **M-step**: Updates model parameters via constrained optimization (SLSQP)
 
-## Examples
+## Example: Notebook
 
-See `examples/tutorial.py` for a complete working example including:
-- Data simulation
-- Model fitting
-- Visualization of results
+Open the tutorial notebook for a complete, reproducible workflow:
 
-Run with:
 ```bash
-pixi run example
-# or
-python examples/tutorial.py
+pixi run notebook
 ```
 
 ## Testing
@@ -178,18 +174,15 @@ python examples/tutorial.py
 # Run all tests
 pixi run test
 
-# Run benchmarks
-pixi run benchmark
-
 # Or with pytest directly
 pytest tests/
 ```
 
 ## Documentation
 
-- **Examples**: See `examples/` directory
-- **API Documentation**: See docstrings in source code
-- **MATLAB Comparison**: See `Matlab/` directory for original implementation
+- **Notebook**: See `ipynb/tutorial.ipynb`
+- **API**: Docstrings in source code
+- **MATLAB reference**: `Matlab/` directory
 
 ## Citation
 
