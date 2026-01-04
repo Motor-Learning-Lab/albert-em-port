@@ -9,12 +9,14 @@ Summary: This module provides explicit parameter packing and unpacking
    utilities for the one-state EM model.
 
 Model:
-    x_{n+1} ~ N(A x_n + B y_n, Q)
+    x_{n+1} ~ N(A x_n + B e_n, Q)
     y_n ~ N(x_n, R)
+
+where e_n is the error signal (difference between perturbation and output).
 
 Parameters:
     A: State transition coefficient (scalar)
-    B: Input coefficient (scalar)
+    B: Error input coefficient (scalar)
     Q: Process noise variance (scalar)
     R: Observation noise variance (scalar)
     x0: Initial state mean (scalar)
@@ -32,8 +34,8 @@ def pack_one_state_params(
     Pack one-state model parameters into a single array.
 
     Args:
-        A: State transition coefficient
-        B: Input coefficient
+        A: State transition coefficient (decay/retention)
+        B: Error input coefficient
         Q: Process noise variance
         R: Observation noise variance
         x0: Initial state mean
@@ -55,8 +57,8 @@ def unpack_one_state_params(
         theta: Packed parameter array [A, B, Q, R, x0, P0]
 
     Returns:
-        A: State transition coefficient
-        B: Input coefficient
+        A: State transition coefficient (decay/retention)
+        B: Error input coefficient
         Q: Process noise variance
         R: Observation noise variance
         x0: Initial state mean

@@ -1,5 +1,55 @@
 # Changelog - Python Port
 
+## Version 1.1.0 (2025-01-05)
+
+### Added - One-State Model Support
+
+#### Core One-State Components
+- `kalman_smoother_one_state.py` - 1D Kalman filter + RTS smoother for one-state E-step
+- `expected_complete_log_likelihood_one_state.py` - One-state M-step objective function
+- `incomplete_log_likelihood_one_state.py` - One-state convergence monitoring
+- `m_step_one_state.py` - One-state parameter optimization
+- `params_one_state.py` - Parameter packing/unpacking utilities
+- `fit_one_state()` - Main entry point for one-state EM fitting
+
+#### Simulation
+- `one_state_simulation_with_noise()` - Generate synthetic one-state data
+- `one_state_simulation_without_noise()` - Deterministic one-state simulation
+
+#### Testing
+- `test_one_state.py` - Comprehensive test suite for one-state model
+  - Parameter recovery test (convergence to true parameters)
+  - EM monotonicity test (likelihood non-decreasing)
+  - Integration tests (error-clamp handling, workflows)
+
+#### Documentation
+- `ONE_STATE_IMPLEMENTATION.md` - Detailed implementation guide
+- `ONE_STATE_API_REFERENCE.md` - API documentation with usage examples
+- Updated `README.md` with one-state quickstart examples
+- Updated module docstring to reflect dual-model support
+
+### Changed - Refactoring
+
+#### Architecture Improvements
+- Extracted shared `_run_em()` driver to eliminate EM loop duplication
+- Both `fit_two_state()` and `fit_one_state()` now call shared driver via callbacks
+- Improved consistency between one-state and two-state implementations
+
+#### Documentation
+- `__init__.py` module docstring updated to document both models
+- `CHANGELOG.md` updated with one-state additions
+- Fixed model equation in `params_one_state.py` (B*e_n, not B*y_n)
+
+### Backward Compatibility
+
+✅ **Full backward compatibility maintained:**
+- `fit_two_state()` preserves original API
+- `generalized_expectation_maximization()` behavior unchanged
+- All existing two-state tests passing
+- No breaking changes to public API
+
+---
+
 ## Version 1.0.0 (2025)
 
 ### Added - Python Port
@@ -9,24 +59,25 @@
 - `expected_complete_log_likelihood.py` - Objective function for M-step optimization
 - `incomplete_log_likelihood.py` - Convergence monitoring function
 - `m_step.py` - Constrained parameter optimization using SciPy
-- `generalized_expectation_maximization.py` - Main EM algorithm coordinator
+- `generalized_expectation_maximization()` - Main EM algorithm coordinator
 
 #### Simulation and Testing
 - `two_state_simulation.py` - Behavior simulation with and without noise
 - `tutorial.py` - Complete demonstration script with visualization
-- `test_em.py` - Automated verification test
+- `test_smoke.py` - Fast smoke tests and fallback mode verification
 
 #### Documentation and Package
 - `__init__.py` - Package initialization with exports
 - `README.md` - Comprehensive Python documentation
-- `requirements.txt` - Dependency specifications
-- `PYTHON_PORT_SUMMARY.md` - Detailed port documentation (root)
+- `pyproject.toml` - Modern Python project configuration
+- `pixi.toml` - Reproducible environment specification
 
 ### Technical Details
 
 #### Core Libraries Used
 - NumPy (≥1.20.0) - Array operations and linear algebra
 - SciPy (≥1.7.0) - Constrained optimization (SLSQP method)
+- Numba (≥0.57.0) - JIT compilation with pure Python fallback
 - Matplotlib (≥3.3.0) - Visualization and plotting
 
 #### Key Translation Decisions
@@ -35,6 +86,7 @@
 - 1-based indexing → 0-based indexing throughout
 - Type hints added for better IDE support
 - Comprehensive docstrings in NumPy style
+- Numba JIT with automatic fallback for compatibility
 
 #### Features Compared to MATLAB
 
@@ -48,6 +100,9 @@
 **Added:**
 - Type hints for function signatures
 - Package structure with `__init__.py`
+- Numba JIT acceleration (with Python fallback)
+- Comprehensive test suite
+
 - Automated test script
 - Modern Python idioms
 - Enhanced documentation

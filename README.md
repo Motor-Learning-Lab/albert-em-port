@@ -1,13 +1,17 @@
 # albert-em
 
-Python package for fitting two-state models of sensorimotor adaptation using the Expectation-Maximization (EM) algorithm.
+Python package for fitting sensorimotor adaptation models using the Expectation-Maximization (EM) algorithm.
 
 [![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 ## Overview
 
-This package provides a complete, high-performance Python implementation of the Expectation-Maximization algorithm for fitting two-state models of motor learning. The implementation uses **Numba JIT compilation** to achieve C-like performance without requiring manual compilation of C++/MEX code.
+This package provides high-performance Python implementations of the Expectation-Maximization algorithm for fitting both **one-state** and **two-state** models of sensorimotor motor learning. The implementation uses **Numba JIT compilation** to achieve C-like performance without requiring manual compilation.
+
+**Supported Models:**
+- **One-State Model**: Single timescale learning dynamics
+- **Two-State Model**: Dual fast/slow timescale learning (original Albert & Shadmehr)
 
 **Original Work:**
 
@@ -19,12 +23,13 @@ This package provides a complete, high-performance Python implementation of the 
 
 ## Features
 
-✨ **High Performance**: Numba-optimized likelihood function provides near-C performance  
-📦 **Easy Installation**: Install as a package via pip or pixi  
+✨ **High Performance**: Numba-optimized likelihood functions with near-C performance  
+📦 **Easy Installation**: Install via pip or pixi  
+🎯 **Two Model Variants**: One-state and two-state models supported  
 🔬 **Scientific Computing**: Built on NumPy, SciPy, and Numba  
-📊 **Visualization**: Optional matplotlib integration for plotting  
-🧪 **Well-Tested**: Includes benchmarks and convergence tests  
-📖 **Comprehensive Docs**: Type hints and detailed documentation  
+📊 **Visualization**: Optional matplotlib integration  
+🧪 **Well-Tested**: Comprehensive test suite including parameter recovery and monotonicity tests  
+📖 **Comprehensive Docs**: Type hints, docstrings, and tutorials  
 
 ## Installation
 
@@ -38,58 +43,29 @@ cd albert-em-port
 # Install with pixi
 pixi install
 
-# Run example
-pixi run example
-
 # Run tests
 pixi run test
 ```
 
 ### Using pip (from GitHub)
 
-Install directly from the GitHub repository using a PEP 508 URL. The import name is `albert_em`.
-
 ```bash
 pip install "albert-em @ git+https://github.com/Motor-Learning-Lab/albert-em-port@main"
-```
-
-Then in Python:
-
-```python
-import albert_em
-```
-
-You can also add this project as a dependency in your own `pyproject.toml`:
-
-```toml
-[project]
-dependencies = [
-    "albert-em @ git+https://github.com/Motor-Learning-Lab/albert-em-port@main",
-]
 ```
 
 ### Using pip (editable clone)
 
 ```bash
-# Clone the repository
 git clone https://github.com/Motor-Learning-Lab/albert-em-port.git
 cd albert-em-port
-
-# Install the package (editable)
 pip install -e .
-
-# Or with visualization support
-pip install -e ".[viz]"
-
-# Or for development
-pip install -e ".[dev]"
 ```
 
-## Quick Start
+## Quick Start: Two-State Model
 
 ```python
 import numpy as np
-from albert_em import generalized_expectation_maximization
+from albert_em import fit_two_state
 
 # Define experimental paradigm
 r = np.concatenate([np.zeros(20), 30*np.ones(50), 
@@ -112,11 +88,52 @@ search_space = np.array([
 constraints = np.array([0.001, 0.001])
 
 # Run EM algorithm
-parameters, likelihoods = generalized_expectation_maximization(
+parameters, likelihoods = fit_two_state(
     initial_params, y, r, EC, EC_value, c, 
     search_space, constraints, num_iterations=100
 )
 ```
+
+## Quick Start: One-State Model
+
+```python
+import numpy as np
+from albert_em import fit_one_state, pack_one_state_params
+
+# Define experimental paradigm
+r = np.concatenate([np.zeros(50), 15*np.ones(100), np.zeros(50)])
+EC = np.zeros(200)
+EC_value = np.zeros(200)
+
+# Your behavioral data
+y = # ... motor output data
+
+# Set up one-state model parameters
+params = pack_one_state_params(
+    A=0.95,      # State transition (decay/retention)
+    B=0.15,      # Error input gain
+    Q=0.01,      # Process noise variance
+    R=0.05,      # Observation noise variance
+    x0=0.0,      # Initial state mean
+    P0=0.1       # Initial state variance
+)
+
+# Define search space
+search_space = np.array([
+    [0.5, 1.0],      # A bounds
+    [0.0, 0.5],      # B bounds
+    [0.001, 0.5],    # Q bounds
+    [0.001, 0.5],    # R bounds
+    [-1.0, 1.0],     # x0 bounds
+    [0.001, 1.0],    # P0 bounds
+])
+
+# Run EM algorithm
+fitted_params, likelihoods = fit_one_state(
+    params, y, r, EC, EC_value, search_space, num_iterations=50
+)
+```
+
 
 ## Repository Structure
 
