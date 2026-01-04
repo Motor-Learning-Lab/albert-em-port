@@ -1,5 +1,8 @@
 # One-State EM Model Implementation Summary
 
+> **Note:** This is the canonical implementation reference for the one-state model.  
+> Related working documents have been moved to `docs/` to reduce surface area.
+
 ## Overview
 Successfully implemented a one-state EM model while preserving the existing two-state API. The implementation follows strict guidelines: no duplication of the EM driver, no public API changes, and duplication only for model-specific math components.
 

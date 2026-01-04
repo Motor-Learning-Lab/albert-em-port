@@ -15,16 +15,15 @@ Model:
 """
 
 import numpy as np
-from typing import List
 
 
 def expected_complete_log_likelihood_one_state(
     parameters: np.ndarray,
     y: np.ndarray,
     e: np.ndarray,
-    xnN: List[float],
-    VnN: List[float],
-    Vnp1nN: List[float],
+    xnN: np.ndarray,
+    VnN: np.ndarray,
+    Vnp1nN: np.ndarray,
 ) -> float:
     """
     Computes the expected complete log-likelihood for the one-state model.
@@ -34,9 +33,9 @@ def expected_complete_log_likelihood_one_state(
                    [A, B, Q, R, x0, P0]
         y: Motor output on each trial (N,)
         e: Error experienced by the subject on each trial (N,)
-        xnN: Smoothed Kalman state expectation (list of scalars)
-        VnN: Smoothed Kalman state variance (list of scalars)
-        Vnp1nN: Smoothed Kalman covariance of consecutive states (list of scalars)
+        xnN: Smoothed Kalman state expectation (N,)
+        VnN: Smoothed Kalman state variance (N,)
+        Vnp1nN: Smoothed Kalman covariance of consecutive states (N-1,)
 
     Returns:
         likelihood: The expected complete log-likelihood
@@ -93,11 +92,11 @@ def expected_complete_log_likelihood_one_state(
     term3 = -term3 / (2.0 * P0)
 
     ###########################################################################
-    # Compute term 4: log-determinant terms
+    # Compute term 4: log-determinant terms (constants omitted)
     ###########################################################################
     term4 = -0.5 * np.log(P0)
     term4 -= (N / 2.0) * np.log(R)
-    term4 -= (3.0 / 2.0) * N * np.log(2.0 * np.pi)
+    # Note: Constant term -(3/2)*N*log(2π) omitted (does not affect optimization)
 
     ###########################################################################
     # Compute term 5: process noise log-determinant

@@ -15,12 +15,12 @@ Model:
 """
 
 import numpy as np
-from typing import Tuple, List
+from typing import Tuple
 
 
 def kalman_smoother_one_state(
     parameters: np.ndarray, y: np.ndarray, e: np.ndarray
-) -> Tuple[List[float], List[float], List[float]]:
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Implements the Kalman smoother for a one-state model.
 
@@ -32,12 +32,12 @@ def kalman_smoother_one_state(
 
     Returns:
         xnN: Smoothed Kalman state expectation E[x(n)|y(1),y(2),...,y(N)]
-             (list of scalars)
+             (N,)
         VnN: Smoothed Kalman state variance var(x(n)|y(1),y(2),...,y(N))
-             (list of scalars)
+             (N,)
         Vnp1nN: Smoothed Kalman covariance of consecutive states
                 cov(x(n+1),x(n)|y(1),y(2),...,y(N))
-                (list of scalars)
+                (N-1,)
     """
 
     # Extract parameter values
@@ -57,10 +57,10 @@ def kalman_smoother_one_state(
 
     # Allocate space for arrays for the prior and posterior expectations and
     # variances of the hidden states
-    xnnm1 = [None] * N  # Prior expectations
-    Vnnm1 = [None] * N  # Prior variances
-    xnn = [None] * N  # Posterior expectations
-    Vnn = [None] * N  # Posterior variances
+    xnnm1 = np.zeros(N)  # Prior expectations
+    Vnnm1 = np.zeros(N)  # Prior variances
+    xnn = np.zeros(N)  # Posterior expectations
+    Vnn = np.zeros(N)  # Posterior variances
 
     # Specify the initial prior, x(1|0) = x0
     xnnm1[0] = x0
@@ -96,8 +96,8 @@ def kalman_smoother_one_state(
     ###########################################################################
 
     # Allocate space for the smoothed expectations and variances
-    xnN = [None] * N
-    VnN = [None] * N
+    xnN = np.zeros(N)
+    VnN = np.zeros(N)
 
     # Instantiate the expectation and variance of the final trial as the
     # posteriors obtained at the end of the forward Kalman filter
@@ -105,7 +105,7 @@ def kalman_smoother_one_state(
     VnN[-1] = Vnn[-1]
 
     # Allocate space for the J parameter
-    Jn = [None] * N
+    Jn = np.zeros(N)
 
     # Backwards recursions for Kalman smoothing
     for n in range(N - 2, -1, -1):
@@ -119,7 +119,7 @@ def kalman_smoother_one_state(
         xnN[n] = xnn[n] + Jn[n] * (xnN[n + 1] - xnnm1[n + 1])
 
     # Compute the smoothed covariances
-    Vnp1nN = [None] * N
+    Vnp1nN = np.zeros(N - 1)
     for n in range(N - 1):
         Vnp1nN[n] = VnN[n + 1] * Jn[n]
 

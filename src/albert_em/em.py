@@ -14,7 +14,7 @@ Summary: This module coordinates the EM algorithm. It successively
 
 import numpy as np
 import warnings
-from typing import Tuple, Callable, List
+from typing import Tuple, Callable
 from albert_em.kalman_smoother import kalman_smoother
 from albert_em.m_step import m_step
 from albert_em.incomplete_log_likelihood import incomplete_log_likelihood
@@ -73,8 +73,11 @@ def _run_em(
 
         # Check monotonicity
         if (n > 0) and (likelihoods[n] < likelihoods[n - 1]):
+            delta = likelihoods[n] - likelihoods[n - 1]
             warnings.warn(
-                "The expected complete log-likelihood function has stopped increasing"
+                f"Incomplete log-likelihood decreased at iteration {n} "
+                f"(delta={delta:.6e}); EM monotonicity violated. "
+                f"Possible numerical issues or optimizer tolerance problem."
             )
 
     return parameters, likelihoods

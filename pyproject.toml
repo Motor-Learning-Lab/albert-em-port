@@ -1,7 +1,7 @@
 [project]
 name = "albert-em"
-version = "1.0.0"
-description = "EM algorithm for two-state model fitting in sensorimotor adaptation"
+version = "1.1.0"
+description = "EM algorithm for one-state and two-state model fitting in sensorimotor adaptation"
 authors = [
     {name = "Scott Albert", email = "salbert8@jhu.edu"},
 ]

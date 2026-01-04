@@ -9,6 +9,16 @@ from albert_em import fit_one_state, pack_one_state_params
 # Pack parameters: [A, B, Q, R, x0, P0]
 params = pack_one_state_params(0.95, 0.15, 0.01, 0.05, 0.0, 0.1)
 
+# Set up parameter bounds (6 parameters × 2 columns for [lower, upper])
+bounds = np.array([
+    [0.0, 1.0],    # A: retention factor
+    [0.0, 1.0],    # B: learning rate
+    [1e-6, 1.0],   # Q: process noise variance
+    [1e-6, 10.0],  # R: observation noise variance
+    [-5.0, 5.0],   # x0: initial state mean
+    [1e-6, 10.0]   # P0: initial state variance
+])
+
 # Fit model
 fitted_params, likelihoods = fit_one_state(
     parameters=params,
